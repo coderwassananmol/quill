@@ -1,4 +1,3 @@
-var _ = require('underscore');
 var User = require('../models/User');
 var Settings = require('../models/Settings');
 var Mailer = require('../services/email');
@@ -11,15 +10,10 @@ var UserController = {};
 
 var maxTeamSize = process.env.TEAM_MAX_SIZE || 4;
 
-
-// Tests a string if it ends with target s
-function endsWith(s, test){
-  return test.indexOf(s, test.length - s.length) !== -1;
-}
-
 /**
  * Determine whether or not a user can register.
  * @param  {String}   email    Email of the user
+ * @para,  {String}   password Password of the user
  * @param  {Function} callback args(err, true, false)
  * @return {[type]}            [description]
  */
@@ -54,16 +48,8 @@ function canRegister(email, password, callback){
       if (err || !emails){
         return callback(err);
       }
-      for (var i = 0; i < emails.length; i++) {
-        if (validator.isEmail(email) && endsWith(emails[i], email)){
-          return callback(null, true);
-        }
-      }
-      return callback({
-        message: "Not a valid educational email."
-      }, false);
+      return callback(null,true);
     });
-
   });
 }
 
@@ -199,8 +185,7 @@ UserController.getAll = function (callback) {
 
 /**
  * Get a page of users.
- * @param  {[type]}   page     page number
- * @param  {[type]}   size     size of the page
+ * @param  {[type]}   query     page number
  * @param  {Function} callback args(err, {users, page, totalPages})
  */
 UserController.getPage = function(query, callback){
@@ -626,7 +611,7 @@ UserController.resetPassword = function(token, password, callback){
  * [ADMIN ONLY]
  *
  * Admit a user.
- * @param  {String}   userId   User id of the admit
+ * @param  {String}   id   User id of the admit
  * @param  {String}   user     User doing the admitting
  * @param  {Function} callback args(err, user)
  */
@@ -653,7 +638,7 @@ UserController.admitUser = function(id, user, callback){
  * [ADMIN ONLY]
  *
  * Check in a user.
- * @param  {String}   userId   User id of the user getting checked in.
+ * @param  {String}   id   User id of the user getting checked in.
  * @param  {String}   user     User checking in this person.
  * @param  {Function} callback args(err, user)
  */
@@ -676,7 +661,7 @@ UserController.checkInById = function(id, user, callback){
  * [ADMIN ONLY]
  *
  * Check out a user.
- * @param  {String}   userId   User id of the user getting checked out.
+ * @param  {String}   id   User id of the user getting checked out.
  * @param  {String}   user     User checking in this person.
  * @param  {Function} callback args(err, user)
  */
@@ -698,7 +683,7 @@ UserController.checkOutById = function(id, user, callback){
  * [ADMIN ONLY]
  *
  * Make user an admin
- * @param  {String}   userId   User id of the user being made admin
+ * @param  {String}   id   User id of the user being made admin
  * @param  {String}   user     User making this person admin
  * @param  {Function} callback args(err, user)
  */
@@ -720,7 +705,7 @@ UserController.makeAdminById = function(id, user, callback){
  * [ADMIN ONLY]
  *
  * Make user an admin
- * @param  {String}   userId   User id of the user being made admin
+ * @param  {String}   id   User id of the user being made admin
  * @param  {String}   user     User making this person admin
  * @param  {Function} callback args(err, user)
  */

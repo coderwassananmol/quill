@@ -14,12 +14,7 @@ angular.module('reg')
       $scope.user = currentUser.data;
 
       // Is the student from MIT?
-      $scope.isMitStudent = $scope.user.email.split('@')[1] == 'mit.edu';
-
-      // If so, default them to adult: true
-      if ($scope.isMitStudent){
-        $scope.user.profile.adult = true;
-      }
+      $scope.isMitStudent = $scope.user.email.split('@')[1] === 'mit.edu';
 
       // Populate the school dropdown
       populateSchools();
@@ -32,39 +27,11 @@ angular.module('reg')
        */
       function populateSchools(){
         $http
-          .get('/assets/schools.json')
-          .then(function(res){
-            var schools = res.data;
-            var email = $scope.user.email.split('@')[1];
-
-            if (schools[email]){
-              $scope.user.profile.school = schools[email].school;
-              $scope.autoFilledSchool = true;
-            }
-          });
-
-        $http
           .get('/assets/schools.csv')
-          .then(function(res){ 
+          .then(function(res){
             $scope.schools = res.data.split('\n');
             $scope.schools.push('Other');
-
-            var content = [];
-
-            for(i = 0; i < $scope.schools.length; i++) {                                          
-              $scope.schools[i] = $scope.schools[i].trim(); 
-              content.push({title: $scope.schools[i]})
-            }
-
-            $('#school.ui.search')
-              .search({
-                source: content,
-                cache: true,     
-                onSelect: function(result, response) {                                    
-                  $scope.user.profile.school = result.title.trim();
-                }        
-              })             
-          });          
+          });
       }
 
       function _updateUser(e){
@@ -81,24 +48,9 @@ angular.module('reg')
             });
           })
           .error(function(res){
+            console.log(res);
             sweetAlert("Uh oh!", "Something went wrong.", "error");
           });
-      }
-
-      function isMinor() {
-        return !$scope.user.profile.adult;
-      }
-
-      function minorsAreAllowed() {
-        return Settings.data.allowMinors;
-      }
-
-      function minorsValidation() {
-        // Are minors allowed to register?
-        if (isMinor() && !minorsAreAllowed()) {
-          return false;
-        }
-        return true;
       }
 
       function _setupForm(){
@@ -144,15 +96,6 @@ angular.module('reg')
                 {
                   type: 'empty',
                   prompt: 'Please select a gender.'
-                }
-              ]
-            },
-            adult: {
-              identifier: 'adult',
-              rules: [
-                {
-                  type: 'allowMinors',
-                  prompt: 'You must be an adult, or an MIT student.'
                 }
               ]
             }

@@ -13,12 +13,6 @@ var profile = {
     max: 100,
   },
 
-  adult: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
-
   school: {
     type: String,
     min: 1,
@@ -28,7 +22,7 @@ var profile = {
   graduationYear: {
     type: String,
     enum: {
-      values: '2016 2017 2018 2019'.split(' '),
+      values: '2018 2019 2020 2021 2022 2023 2024'.split(' '),
     }
   },
 
@@ -57,15 +51,6 @@ var profile = {
 // Only after confirmed
 var confirmation = {
   phoneNumber: String,
-  dietaryRestrictions: [String],
-  shirtSize: {
-    type: String,
-    enum: {
-      values: 'XS S M L XL XXL WXS WS WM WL WXL WXXL'.split(' ')
-    }
-  },
-  wantsHardware: Boolean,
-  hardware: String,
 
   major: String,
   github: String,
@@ -73,28 +58,10 @@ var confirmation = {
   website: String,
   resume: String,
 
-  needsReimbursement: Boolean,
-  address: {
-    name: String,
-    line1: String,
-    line2: String,
-    city: String,
-    state: String,
-    zip: String,
-    country: String
-  },
   receipt: String,
-
-  hostNeededFri: Boolean,
-  hostNeededSat: Boolean,
-  genderNeutral: Boolean,
-  catFriendly: Boolean,
-  smokingFriendly: Boolean,
-  hostNotes: String,
 
   notes: String,
 
-  signatureLiability: String,
   signaturePhotoRelease: String,
   signatureCodeOfConduct: String,
 };
@@ -278,7 +245,7 @@ schema.statics.generateHash = function(password) {
 /**
  * Verify an an email verification token.
  * @param  {[type]}   token token
- * @param  {Function} cb    args(err, email)
+ * @param  {Function} callback args(err, email)
  */
 schema.statics.verifyEmailVerificationToken = function(token, callback){
   jwt.verify(token, JWT_SECRET, function(err, email){
@@ -331,9 +298,8 @@ schema.statics.getByToken = function(token, callback){
 schema.statics.validateProfile = function(profile, cb){
   return cb(!(
     profile.name.length > 0 &&
-    profile.adult &&
     profile.school.length > 0 &&
-    ['2016', '2017', '2018', '2019'].indexOf(profile.graduationYear) > -1 &&
+    ['2018', '2019', '2020', '2021', '2022', '2023', '2024'].indexOf(profile.graduationYear) > -1 &&
     ['M', 'F', 'O', 'N'].indexOf(profile.gender) > -1
     ));
 };
