@@ -191,7 +191,41 @@ controller.sendPasswordChangedEmail = function(email, callback){
       callback(err, info);
     }
   });
+};
 
+/**
+ * Send mail on admission.
+ * @param  {[type]}   email    [description]
+ */
+controller.sendAdmittedMail = function(email) {
+
+    var options = {
+        to: email,
+        subject: "["+HACKATHON_NAME+"] - You have been admitted!"
+    };
+
+    var locals = {
+        title: 'hackCBS Admission Confirmed',
+        subtitle: '',
+        description: 'You have been admitted to hackCBS 2018. Please confirm your spot by logging in.',
+        actionUrl: ROOT_URL,
+        actionName: "Confirm your spot"
+    };
+
+    /**
+     * Eamil-verify takes a few template values:
+     * {
+     *   verifyUrl: the url that the user must visit to verify their account
+     * }
+     */
+    sendOne('email-link-action', options, locals, function(err, info){
+        if (err){
+            console.log(err);
+        }
+        if (info){
+            console.log(info.message);
+        }
+    });
 };
 
 module.exports = controller;

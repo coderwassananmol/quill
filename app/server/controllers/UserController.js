@@ -699,6 +699,14 @@ UserController.makeAdminById = function(id, user, callback){
     new: true
   },
   callback);
+    User.findOne({_id: id}, function(err,data) {
+        if(err) {
+            console.log(err);
+        }
+        else {
+            Mailer.sendAdmittedMail(data.email);
+        }
+    })
 };
 
 /**
